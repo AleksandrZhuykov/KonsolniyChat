@@ -26,7 +26,7 @@ void Konsol_Chat::showLoginMenu() {
 	currentUser_ = nullptr;//присываиваем текущему пользователю значение nullptr
 	char simvol;
 	do {
-		std::cout << "\033[33m" << "(1)Логин" << std::endl;
+		std::cout << "(1)Логин" << std::endl;
 		std::cout << "(2)Зарегистрироваться" << std::endl;
 		std::cout << "(0)Закрыть" << std::endl;
 		std::cout << "\033[36m" << ">>" << "\033[0m";
