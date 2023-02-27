@@ -10,15 +10,12 @@ public:
 		:login_(login), password_(password), name_(name) {
 	}
 	const std::string& GetUserLogin()const {
-
 		return login_;
 	}
-
 	const std::string& GetUserPassword()const {
 		return password_;
 
 	}
-
 	void SetUserPassword(const std::string& password) {
 		/*this->*/ password_ = password;
 	}

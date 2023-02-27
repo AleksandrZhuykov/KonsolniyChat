@@ -3,7 +3,6 @@
 #include "Konsol_Chat.h"
 #include "Polzovatel.h"
 
-
 void Konsol_Chat::start() {
 	ChatWork_ = true;
 }
@@ -22,7 +21,6 @@ std::shared_ptr<Polzovatel>Konsol_Chat::getUserByName(const std::string& name)co
 	return nullptr;
 }
 void Konsol_Chat::showLoginMenu() {
-	setlocale(LC_ALL, "");
 	currentUser_ = nullptr;//присываиваем текущему пользователю значение nullptr
 	char simvol;
 	do {
@@ -49,21 +47,17 @@ void Konsol_Chat::showLoginMenu() {
 		default:
 			std::cout << "1 or 2..." << std::endl;
 			break;
-
 		}
 	} while (!currentUser_ && ChatWork_);//цикл работает, пока не зарегистрирован пользователь, и пока чат работает
 }
 void Konsol_Chat::login() {
-	setlocale(LC_ALL, "");
 	std::string login, password;
 	char simvol;
-
 	do {
 		std::cout << "Логин:";
 		std::cin >> login;
 		std::cout << "Пароль:";
 		std::cin >> password;
-
 		currentUser_ = getUserByLogin(login);//указатель на пользователя, который зарегистрировался
 		if (currentUser_ == nullptr || (password != currentUser_->GetUserPassword()))//если данного пользователя нет в векторе, то возвращаем пустой указаетель, или если неверный пароль
 		{
@@ -76,31 +70,27 @@ void Konsol_Chat::login() {
 		}
 	} while (!currentUser_);
 }
-
 void Konsol_Chat::showChat()const {
-	setlocale(LC_ALL, "");
 	std::string from;
 	std::string to;
-	std::cout << "---Chat---" << std::endl;
+	std::cout << "---Чат---" << std::endl;
 	for (auto& mess : messageList_) {
-		if (currentUser_->GetUserLogin() == mess.GetFrom() || currentUser_->GetUserLogin() == mess.GetTo() || mess.GetTo() == "all") {//если текущий пользователь
-			from = (currentUser_->GetUserLogin() == mess.GetFrom()) ? "me" : getUserByLogin(mess.GetFrom())->GetUserName();
-			if (mess.GetTo() == "all") {//если, to равно all, то адресуем сообщение всем пользователям
-				to = "all";
+		if (currentUser_->GetUserLogin() == mess.GetFrom() || currentUser_->GetUserLogin() == mess.GetTo() || mess.GetTo() == "все") {//если текущий пользователь
+			from = (currentUser_->GetUserLogin() == mess.GetFrom()) ? "мне" : getUserByLogin(mess.GetFrom())->GetUserName();
+			if (mess.GetTo() == "все") {//если, to равно всем, то адресуем сообщение всем пользователям
+				to = "все";
 			}
 			else {
-				to = (currentUser_->GetUserLogin() == mess.GetTo()) ? "me" : getUserByLogin(mess.GetTo())->GetUserName();
-				//если мы текущее имя пользователя равно to, то отправляем сообщение самому себе, если нет, то получаем имя пользователя и присваиваем его значение полю to
+				to = (currentUser_->GetUserLogin() == mess.GetTo()) ? "мне" : getUserByLogin(mess.GetTo())->GetUserName();
+				//если текущее имя пользователя равно to, то отправляем сообщение самому себе, если нет, то получаем имя пользователя и присваиваем его значение полю to
 			}
-			std::cout << "Сообщение от " << from << " to " << to << std::endl;
+			std::cout << "Сообщение от " << from << " всем " << to << std::endl;
 			std::cout << " Текст:" << mess.GetText() << std::endl;
 		}
 	}
 	std::cout << "-----------" << std::endl;
-
 }
 void Konsol_Chat::signUp() {
-	setlocale(LC_ALL, "");
 	std::string login, password, name;
 	double time;
 	std::cout << "Логин: ";
@@ -109,7 +99,7 @@ void Konsol_Chat::signUp() {
 	std::cin >> password;
 	std::cout << "Имя:";
 	std::cin >> name;
-	if (getUserByLogin(login) || login == "all") //если login занят, то ошибка
+	if (getUserByLogin(login) || login == "все") //если login занят, то ошибка
 	{
 		throw UserLoginExp();
 	}
@@ -118,7 +108,6 @@ void Konsol_Chat::signUp() {
 	currentUser_ = std::make_shared<Polzovatel>(user);//создаем указатель на текущего пользователя
 }
 void Konsol_Chat::showUserMenu() {
-	setlocale(LC_ALL, "");
 	char operation;
 	std::cout << "Привет, " << currentUser_->GetUserName() << std::endl;
 	while (currentUser_) {
@@ -147,28 +136,28 @@ void Konsol_Chat::showUserMenu() {
 void Konsol_Chat::addMessenger() {
 	setlocale(LC_ALL, "");
 	std::string to, text;
-
 	std::cout << "Кому (имя пользователя или все)";
 	std::cin >> to;
 	std::cout << "Текст: ";
 	std::cin.ignore();
 	getline(std::cin, text);
-	if (!(to == "all" || getUserByName(to))) {//либо посылаем сообщения всем, либо посылаем пользователю, который уже есть в векторе
+	if (!(to == "все" || getUserByName(to))) {//либо посылаем сообщения всем, либо посылаем пользователю, который уже есть в векторе
 		std::cout << "сообщение об ошибке отправки: не удается найти" << to << std::endl;
 		return;
 	}
-	if (to == "all")
-		messageList_.push_back(Messenger{ currentUser_->GetUserLogin(),"all",text });//помещаем объект класса Message в констукторе которого указывем ссылку на текущего пользоваетеля, сообещение, и кому адресовано
+	if (to == "все")
+		messageList_.push_back(Messenger{ currentUser_->GetUserLogin(),"все",text });//помещаем объект класса Message в констукторе которого указывем ссылку на текущего пользоваетеля, сообещение, и кому адресовано
 	else
 		messageList_.push_back(Messenger{ currentUser_->GetUserLogin(),getUserByName(to)->GetUserLogin(),text });
 
 }
 void Konsol_Chat::showAllUsersName()const {
-	std::cout << "---Users---" << std::endl;
+	setlocale(LC_ALL, "");
+	std::cout << "---Пользователи---" << std::endl;
 	for (auto& user : userList_) {
 		std::cout << user.GetUserName();
 		if (currentUser_->GetUserLogin() == user.GetUserLogin())
-			std::cout << "(me)";
+			std::cout << "(мне)";
 		std::cout << std::endl;
 
 	}
